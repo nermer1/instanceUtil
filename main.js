@@ -1,378 +1,107 @@
 /**
- * 가제 untitle.js
+ * @namespace instanceUtil
+ * @version 1.0.0
+ *
+ 
+ *
+ * 지원: js service 전체
+ *
+ * 사용법:
+ * main.js 로드 $instanceUtil 객체를 이용하여 사용
  * 
- * initialize
- * - config read
- * - plugin read
+ * $instanceUtil.module.modules를 입력하면 사용할 수 있는 유틸 확인
  * 
- * config에 설정한 내역 적용
- * config 적용한 플러그인 로그 (플러그인 데이터에 적용 플러그인 체크, 있으면 로드)
+ * $instanceUtil.tools.join을 이용하면 지정한 객체에 담아서 사용 가능
  * 
- * scriptload = function() {
+ * ex) const util = {util1: function() {}}, $instanceUtil.tools.join(util);
  * 
- * }
- * 
- * 
- * plugin load
- * 
- * script load
- * 
- * 
- * 
+ *
  */
 
-
-(function() {
-    window.Box || (window.Box = function() {
-        var config = {
-            extraModules: ["test", "test2"]
-        };
-        //Box.tools.extend(config, {}).extraModules.map(module => modules.loader.load(module));
-        var test = {
-            jsload: function(module) {
-                const script = document.createElement('script');
-                script.type = "text/javascript";
-                script.src = "modules/" + module + "/module.js";
-                document.head.append(script);
-            }
-        }
-
-        test.jsload('test');
-
-        return {
-            init: function(options) {
-                // init 사용하지 않음
-                return Box.modules.module;
-            },
-            SandBox: function() {
-                // 샌드박스 패턴 여기선 사용하지 않음
-                var args = Array.prototype.slice.call(arguments),
-                callback = args.pop(),
-                modules = (args[0] && typeof args[0] === "string") ? args : args[0], i;
-            
-                if(!(this instanceof Box.SandBox)) {
-                    return new Box.SandBox(modules, callback);
-                }
-            
-                if(!modules || modules === "*" || modules[0] === "*") {
-                    modules = [];
-                    for(i in Box.SandBox.modules) {
-                        if(Box.SandBox.modules.hasOwnProperty(i)) {
-                            modules.push(i);
-                        }
-                    }
-                }
-            
-                for(i = 0; i < modules.length; ++i) {
-                    Box.SandBox.modules[modules[i]](this);
-                }
-            
-                callback(this);
-            }
-        }
-    }());
-
-    (function() {
-        Box.tools = {
-            extend: function() {
-                var o = arguments[0];
-                for (var i = 1; i < arguments.length; ++i) {
-                    for (var k in arguments[i]) {
-                        if (arguments[i].hasOwnProperty(k))
-                            o[k] = arguments[i][k];
-                    }
-                }
-                return o;
-            },
-            jsload: function(module) {
-                const script = document.createElement('script');
-                script.type = "text/javascript";
-                script.src = Box.modules.baseUrl + module + "/module.js";
-                document.head.append(script);
-            }
-        }  
-    }());
-
-    //Box.moduleManager
-    Box.moduleManager = function(baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-    Box.moduleManager.prototype = {
-        put: function(name, option) {
-            console.log("모듈 커넥트 완료");
-            console.log(this.baseUrl);
-            console.log(name, option);
-        }
-    }
-    Box.modules = new Box.moduleManager("modules/");
-    /* Box.modules.module = {}
-    Box.modules.module.getModules = {}
-    Box.modules.put = function(name, option) {
-        Box.modules.module[name] = option.util;
-    } */
-    
-    /* Box.SandBox.prototype = {
-        name: "app",
-        version: "1.0.0",
-        getName: function() {
-            return this.name;
-        }
-    }
-    
-    Box.SandBox.modules = {}; */
-
-    /* Box.event = {
-        CHANGE_EVENT: {
-            READY_STATE_CHANGE: "readystatechange"
-        },
-        addEvent: function(target, event, handler) {
-            target.addEventListener(event, handler);
-        },
-        removeEvent: function(target, event, handler) {
-            target.removeEventListener(event, handler);
-        },
-        eventHandler: {
-            readystatechangeHandler: function(e) {
-                if(e.target.readyState && e.target.readyState === "complete") {
-                    AAA = Box.SandBox(function(box) {
-                        return box;
-                    });
-                    e.target.removeEventListener(Box.event.CHANGE_EVENT.READY_STATE_CHANGE, Box.event.eventHandler.readystatechangeHandler);
-                }
-            }
-        }
-    } */
-
-    //Box.event.addEvent(document, Box.event.CHANGE_EVENT.READY_STATE_CHANGE, Box.event.eventHandler.readystatechangeHandler);
-})();
-
-/* (function() {
-    window.NONAME || (window.NONAME = function() {
-        return {
-            SandBox: function() {
-                var args = Array.prototype.slice.call(arguments),
-                callback = args.pop(),
-                modules = (args[0] && typeof args[0] === "string") ? args : args[0], i;
-        
-                console.log(SandBox);
-                if(!(this instanceof SandBox)) {
-                    return new NONAME(modules, callback);
-                }
-        
-                this.a = 1;
-                this.b = 2;
-        
-                if(!modules || modules === "*" || modules[0] === "*") {
-                    modules = [];
-                    for(i in SandBox.modules) {
-                        if(SandBox.modules.hasOwnProperty(i)) {
-                            modules.push(i);
-                        }
-                    }
-                }
-        
-                for(i = 0; i < modules.length; ++i) {
-                    SandBox.modules[modules[i]](this);
-                }
-        
-                callback(this);
-            }
-        }
-    }());
-
-    NONAME.SandBox.prototype = {
-        name: "app",
-        version: "1.0.0",
-        getName: function() {
-            return this.name;
-        }
-    }
-    
-    NONAME.SandBox.modules = {};
-    NONAME.SandBox.modules.dom = function(box) {
-        box.getName = function() {
-            console.log("dom");
-        }
-        box.getStyle = function() {
-            console.log("style");
-        }
-        box.width = 100;
-    }
-    
-    NONAME.SandBox.modules.foo = function(box) {
-        box.getAttach = function() {
-            console.log('attach');
-        }
-        box.getDetach = function() {
-            console.log('detach');
-        }
-    }
-    
-    NONAME.SandBox("foo", function(box) {
-        console.log(box.version);
-        console.log(box);
-    });
-}()); */
-
-
-/* (function() {
-    window.UNTITLE || (window.UNTITLE = function () {
-        return {
-            version: "2.0.0",
-            init: function() {
-
-            },
-            names: function(str) {
-                let parts = str.split(","),
-                parent = UNTITLE, i;
-
-                if(parts[0] === "UNTITLE") {
-                    parts = parts.slice(1);
-                }
-
-                for(i = 0; i < parts.length; ++i) {
-                    if(typeof parent[parts[i]] === "undefined") {
-                        parent[parts[i]] = {};
-                    }
-                    parent = parent[parts[i]];
-                }
-                return parent;
-            }
-        }
-    }());
-
-    let config = {
-        extraPlugins: "",
-        removePlugins: ""
+/**
+ *
+ *
+ */
+(function () {
+    const config = {
+        version: '1.0.0',
+        name: 'instanceUtil',
+        description: 'unidocu5 plugin, instanceUtil',
+        basePath: '/instanceUtil/modules/',
+        extraModules: ['test']
+    };
+    window.$instanceUtil = {};
+    $instanceUtil.getConfig = () => config;
+    $instanceUtil.setExtraModules = (modules) => {
+        if (!Array.isArray(modules)) throw '배열로 입력';
+        config['extraModules'] = modules;
+    };
+    $instanceUtil.setBasePath = (basePath) => {
+        if (typeof basePath !== 'string') throw '배열로 입력';
+        config['basePath'] = basePath;
+    };
+    $instanceUtil.init = () => {
+        $instanceUtil.module = new $instanceUtil.moduleManager(config.basePath);
+        $instanceUtil.module.load();
+    };
+    $instanceUtil.moduleLoad = (path) => {
+        const extraModules = $instanceUtil.getConfig().extraModules;
+        extraModules.forEach((module) => $instanceUtil.tools.scriptLoader(path + module));
     };
 
-    let kiki = {
-        config: {
+    /**
+     * 여러가지 util
+     */
+    $instanceUtil.tools = {
+        scriptLoader: (src) => {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = src + '/module.js';
+            document.head.append(script);
 
+            script.onerror = (error) => console.log('존재하지 않는 모듈: ' + script.src);
         },
-        utils: {
-            util: {
-                extend: function() {
-                    var o = arguments[0];
-                    for (var i = 1; i < arguments.length; ++i) {
-                        for (var k in arguments[i]) {
-                            if (arguments[i].hasOwnProperty(k))
-                                o[k] = arguments[i][k];
-                        }
-                    }
-                    return o;
-                }
-            }
-        }
-    };
-
-    UNTITLE.tools = {
-        extend: function() {
+        extend: () => {
             var o = arguments[0];
             for (var i = 1; i < arguments.length; ++i) {
                 for (var k in arguments[i]) {
-                    if (arguments[i].hasOwnProperty(k))
-                        o[k] = arguments[i][k];
+                    if (arguments[i].hasOwnProperty(k)) o[k] = arguments[i][k];
                 }
             }
             return o;
+        },
+        join: (o) => {
+            setTimeout(function () {
+                var t = $instanceUtil.module.modules;
+                for (var key in t) {
+                    if (!o.hasOwnProperty(key)) o[key] = t[key]['method'];
+                    else $instanceUtil.tools.extend(o[key], t[key]['method']);
+                }
+            }, 1000);
         }
     };
 
-    UNTITLE.resourceManager = function (path, name) {
-        this.basePath = path;
-        this.fileName = name;
-        this.registered = {};
+    $instanceUtil.moduleManager = function (path) {
+        this.basePath = (/[\\/]/.test(path.substr(-1)) ? path : path + '/') + config.name + '/modules/';
+        this.modules = {};
     };
-
-    UNTITLE.resourceManager.prototype = {
-        put: function(name, option) {
-            if (this.registered[name]) throw Error(`${name}은/는 존재합니다.`);
-            var b = this.registered[name] = option || {};
-            //b.name = name;
-            //b.path = this.getPath(name);
-            return this.get(name);
+    $instanceUtil.moduleManager.prototype = {
+        add: function (data) {
+            let name = data['moduleName'],
+                module;
+            if (this.modules[name]) throw `모듈 ${name}(이/가) 중복 등록 불가`;
+            module = this.modules[name] = data || {};
+            module.path = this.basePath + name;
         },
-        get: function (name) {
-            return this.registered[name] || null;
+        load: function () {
+            $instanceUtil.moduleLoad(this.basePath);
         },
-        getPath: function (name) {
-            var d = this.externals[name];
-            return UNTITLE.getUrl(d && d.dir || this.basePath + name + "/");
+        getModule: function (moduleName) {
+            if (!this.hasModule(moduleName)) throw `모듈 ${moduleName}(이/가) 존재하지 않음`;
+            return this.modules[moduleName]['method'];
+        },
+        hasModule: function (moduleName) {
+            return !!this.modules[moduleName];
         }
-    }
-
-    UNTITLE.modules = new UNTITLE.resourceManager("modules/", "module");
-    UNTITLE.script = {
-        load: function() {
-            const script = document.createElement('script');
-            script.type = "text/javascript";
-            script.src = 'modules/test/module.js';
-            document.head.appendChild(script);
-        }
-    }
-
-    UNTITLE.script.load();
-}()); */
-
-
-/* function SandBox() {
-    var args = Array.prototype.slice.call(arguments),
-    callback = args.pop(),
-    modules = (args[0] && typeof args[0] === "string") ? args : args[0], i;
-
-    if(!(this instanceof SandBox)) {
-        return new SandBox(modules, callback);
-    }
-
-    this.a = 1;
-    this.b = 2;
-
-    if(!modules || modules === "*" || modules[0] === "*") {
-        modules = [];
-        for(i in SandBox.modules) {
-            if(SandBox.modules.hasOwnProperty(i)) {
-                modules.push(i);
-            }
-        }
-    }
-
-    for(i = 0; i < modules.length; ++i) {
-        SandBox.modules[modules[i]](this);
-    }
-
-    callback(this);
-}
-
-SandBox.prototype = {
-    name: "app",
-    version: "1.0.0",
-    getName: function() {
-        return this.name;
-    }
-}
-
-SandBox.modules = {};
-SandBox.modules.dom = function(box) {
-    box.getName = function() {
-        console.log("dom");
-    }
-    box.getStyle = function() {
-        console.log("style");
-    }
-    box.width = 100;
-}
-
-SandBox.modules.foo = function(box) {
-    box.getAttach = function() {
-        console.log('attach');
-    }
-    box.getDetach = function() {
-        console.log('detach');
-    }
-}
-
-SandBox("foo", function(box) {
-    console.log(box.version);
-    console.log(box);
-}); */
+    };
+})();

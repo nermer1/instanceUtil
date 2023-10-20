@@ -1,11 +1,23 @@
 {
-  "name": "instanceutil",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "instanceutil",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "compile": "babel main.js --out-dir target/vendorCustom/plugins/instanceUtil && babel modules --out-dir target/vendorCustom/plugins/instanceUtil/modules && prettier --write --ignore-path .prettierignore target/"
+    },
+    "author": "",
+    "devDependencies": {
+        "@babel/cli": "^7.22.9",
+        "@babel/core": "^7.22.9",
+        "@babel/preset-env": "^7.22.9"
+    },
+    "dependencies": {
+        "eslint": "^8.46.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "prettier": "^3.0.1"
+    }
 }
+

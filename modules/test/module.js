@@ -1,12 +1,15 @@
-(function() {
-    const options = {
-        version: "1.0.0",
-        require: ["strintuil"],
-        util: {
-            addArray: function() {
-                        
+(function () {
+    const info = {
+        version: '1.0.0',
+        moduleName: 'stringUtil',
+        method: {
+            test1: function () {
+                console.log('test1');
+            },
+            test2: function () {
+                console.log('test2');
             }
         }
     };
-    Box.modules.put("ArrayUtil", options);
+    $instanceUtil.module.add(info);
 })();
